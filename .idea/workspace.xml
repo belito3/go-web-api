@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="908524e9-fc9e-4b2a-834e-b66ccdd243bd" name="Default Changelist" comment="" />
+    <list default="true" id="908524e9-fc9e-4b2a-834e-b66ccdd243bd" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/refs/oracle/instantclient_12_1.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/refs/oracle/oci8.pc" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
