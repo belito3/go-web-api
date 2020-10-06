@@ -1,0 +1,85 @@
+http:
+  # http listen address
+  host: "0.0.0.0"
+  # http port
+  port: 8000
+  # http Graceful shutdown wait timeout duration (in seconds)
+  shutdown_timeout: 30
+  # Maximum content length allowed(64M)
+  max_content_length: 67108864
+
+# Whether to print configuration parameters at startup
+print_config: true
+
+# Operating mode(debug,test,release)
+run_mode : debug
+
+cors:
+  # Whether to enable
+  enable: true
+  #  List of domain names that allow cross-domain requests (* means all allowed)
+  allow_origins: "*"
+  # List of request methods that allow cross-domain requests
+  allow_methods: "POST, GET, PUT, DELETE, PATCH"
+  # List of non-simple headers that clients are allowed to use with cross-domain requests
+  allow_headers: "Origin, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization"
+  # Whether the request can include user credentials such as cookies, HTTP authentication or client SSL certificates
+  allow_credentials: "true"
+  # The time for which the results of the preflight request can be cached (in seconds)
+  max_age: "86400"
+
+log:
+  # Log level (1: fatal, 2: error, 3: warn, 4: info, 5: debug)
+  level: 5
+  # Log format (support output format: text/json)
+  format: text
+
+unique_id:
+  # Unique ID type (support: uuid/object/snowflake)
+  type: "snowflake"
+  # https://github.com/twitter-archive/snowflake
+  snowflake:
+    # Node ID (0-1023)
+    node: 1
+    # Start timestamp(2020-07-15 15:04:05)
+    epoch: 1594800245000
+
+jwt_secret_key: "my_secret_key"
+
+# Request frequency limit in App
+app_rate_limiter:
+  # Whether to enable (true, false)
+  enable: true
+  # The maximum number of requests allowed per second
+  count: 100
+
+# Request frequency limit each client (if redis is available, use redis, otherwise use memory storage)
+client_rate_limiter:
+  # Whether to enable (true, false)
+  enable: false
+  # The maximum number of requests allowed per client per minute
+  count: 10
+  # redis database (if the storage method is redis, specify the stored database)
+  redis_db: 10
+
+# redis configuration information
+redis:
+  # Address
+  addr: "127.0.0.1:6379"
+  # Password
+  password: ""
+
+# dbsql config
+postgres:
+  # Data source name    "postgresql://root:secret@localhost:5432/simplebank?sslmode=disable"
+  username: "root"
+  password: "secret"
+  host: "192.168.0.1"
+  port: 5432
+  database_name: "simple_bank"
+  # Set the maximum time that the connection can be reused (unit: seconds)
+  max_life_time:  1800
+  # Set the maximum number of open connections to the database
+  max_open_conns: 100
+  # Set the maximum number of connections in the idle connection pool
+  max_idle_conns: 100

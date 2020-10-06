@@ -1,0 +1,9 @@
+version: '3'
+services:
+  api-codebase-go:
+    image: "api-codebase-go:latest"
+    volumes:
+      - ./app/config/config.yaml:/app/config.yaml:ro
+      - ~/logs/go-docker:/app/logs
+    ports:
+      - "8000:8000"
