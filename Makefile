@@ -16,10 +16,13 @@ migratedown:
 build:
 	export CGO_ENABLED=0 && go build -o main .
 
+test:
+	go test -v -cover ./app/repository/impl
+
 docker_build:
 	make build && docker build -t api-codebase-go:latest .
 
 docker_run:
 	docker-compose up
 
-.PHONY: postgres createdb dropdb migrateup migratedown build docker_build docker_run
+.PHONY: postgres createdb dropdb migrateup migratedown build test docker_build docker_run
