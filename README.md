@@ -19,4 +19,5 @@
 - Update config in file /config/config.yaml
 
 ### References
-1. [go-database-sql](http://go-database-sql.org/retrieving.html)
+1. [simplebank](https://github.com/techschool/simplebank)
+2. [gin-admin](https://github.com/LyricTian/gin-admin)
