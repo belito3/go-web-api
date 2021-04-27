@@ -1,25 +1,24 @@
 package middleware
 
 import (
-	"github.com/belito3/go-api-codebase/app/config"
 	"github.com/belito3/go-api-codebase/pkg/logger"
 	"github.com/gin-gonic/gin"
 )
 
 //CORSMiddleware set header CORS
 func CORSMiddleware() gin.HandlerFunc {
-	cfg := config.C.CORS
-	if !cfg.Enable {
-		return EmptyMiddleware()
-	}
-
 	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", cfg.AllowOrigins)
-		c.Writer.Header().Set("Access-Control-Max-Age", cfg.MaxAge)
-		c.Writer.Header().Set("Access-Control-Allow-Methods", cfg.AllowMethods)
-		c.Writer.Header().Set("Access-Control-Allow-Headers", cfg.AllowHeaders)
+		// List of domain names that allow cross-domain requests (* means all allowed)
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		// The time for which the results of the preflight request can be cached (in seconds)
+		c.Writer.Header().Set("Access-Control-Max-Age", "86400")
+		// List of request methods that allow cross-domain requests
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, PATCH")
+		// List of non-simple headers that clients are allowed to use with cross-domain requests
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 		//c.Writer.Header().Set("Access-Control-Expose-Headers", "Content-Length")
-		c.Writer.Header().Set("Access-Control-Allow-Credentials", cfg.AllowCredentials)
+		// Whether the request can include user credentials such as cookies, HTTP authentication or client SSL certificates
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 
 		if c.Request.Method == "OPTIONS" {
 			logger.Infof(nil,"OPTIONS")

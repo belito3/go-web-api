@@ -2,11 +2,14 @@ package app
 
 import (
 	"context"
+	"fmt"
 	"github.com/belito3/go-api-codebase/app/config"
+	"github.com/belito3/go-api-codebase/app/route"
 	"github.com/belito3/go-api-codebase/app/service"
 	"github.com/belito3/go-api-codebase/app/util"
 	"github.com/belito3/go-api-codebase/pkg/logger"
 	"go.uber.org/dig"
+	"net/http"
 	"os"
 	"os/signal"
 	"sync/atomic"
@@ -15,17 +18,17 @@ import (
 )
 
 type options struct {
-	ConfigFile	string
+	AppConf	config.AppConfiguration
 	Version		string
 }
 
 // Option
 type Option func(*options)
 
-// SetConfigFile
-func SetConfigFile(s string) Option {
+// SetConfig
+func SetAppConfig(s config.AppConfiguration) Option {
 	return func(o *options) {
-		o.ConfigFile = s
+		o.AppConf = s
 	}
 }
 
@@ -82,21 +85,19 @@ func Init(ctx context.Context, opts ...Option) (func(), error) {
 		opt(&o)
 	}
 
-	// Init global config
-	config.Init(o.ConfigFile)
-	config.PrintWithJSON()
-	logger.Printf(ctx, "Service started, running mode：%s，version number：%s，process number：%d", config.C.RunMode, o.Version, os.Getpid())
+	config.PrintWithJSON(o.AppConf)
+	logger.Printf(ctx, "Service started, running mode：%s，version number：%s，process number：%d", o.AppConf.RunMode, o.Version, os.Getpid())
 
 	// Initialize trace_id for node that app is running
 	// TODO: uuid, object, snowflake
-	util.InitID()
+	util.InitID(o.AppConf)
 
 	// Init logger
-	setupLogger()
+	setupLogger(o.AppConf)
 
-	container, containerCall := BuildContainer()
+	container, containerCall := BuildContainer(o.AppConf)
 
-	httpServerCleanFunc := InitHTTPServer(ctx, container)
+	httpServerCleanFunc := InitHTTPServer(ctx, container, o.AppConf)
 
 	return func() {
 		httpServerCleanFunc()
@@ -105,11 +106,11 @@ func Init(ctx context.Context, opts ...Option) (func(), error) {
 }
 
 
-func BuildContainer() (*dig.Container, func()) {
+func BuildContainer(conf config.AppConfiguration) (*dig.Container, func()) {
 	container := dig.New()
 
 	// store DB
-	storeCall, err := InitStore(container)
+	storeCall, err := InitStore(container, conf)
 	handleError(err)
 
 	// register service
@@ -119,6 +120,40 @@ func BuildContainer() (*dig.Container, func()) {
 	return container, func() {
 		if storeCall != nil {
 			storeCall()
+		}
+	}
+}
+
+
+func InitHTTPServer(ctx context.Context, container *dig.Container, conf config.AppConfiguration) func() {
+	cfg := conf.HTTP
+	addr := fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)
+
+	srv := &http.Server{
+		Addr: addr,
+		Handler: route.InitGinEngine(container, conf),
+		//ReadTimeout: 5 * time.Second,
+		//WriteTimeout: 10 * time.Second,
+		//IdleTimeout: 15 * time.Second,
+	}
+
+	go func() {
+		logger.Printf(ctx, "HTTP server is running at %s.", addr)
+		err := srv.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			panic(err)
+		}
+	}()
+
+	return func() {
+		// Wait for interrupt signal to gracefully shutdown the app with
+		// a timeout
+		ctx, cancel := context.WithTimeout(ctx, time.Second * time.Duration(cfg.ShutdownTimeout))
+		defer cancel()
+
+		srv.SetKeepAlivesEnabled(false)
+		if err := srv.Shutdown(ctx); err != nil {
+			logger.Errorf(ctx, err.Error())
 		}
 	}
 }

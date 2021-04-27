@@ -13,8 +13,8 @@ var idFunc = func() string {
 }
 
 // InitID ...
-func InitID() {
-	switch config.C.UniqueID.Type {
+func InitID(conf config.AppConfiguration) {
+	switch conf.UniqueID.Type {
 	case "uuid":
 		idFunc = func() string {
 			return unique.MustUUID().String()
@@ -25,7 +25,7 @@ func InitID() {
 		}
 	default:
 		// Initialize snowflake node
-		err := unique.SetSnowflakeNode(config.C.UniqueID.Snowflake.Node, config.C.UniqueID.Snowflake.Epoch)
+		err := unique.SetSnowflakeNode(conf.UniqueID.Snowflake.Node, conf.UniqueID.Snowflake.Epoch)
 		if err != nil {
 			panic(err)
 		}

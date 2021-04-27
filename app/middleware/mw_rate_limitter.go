@@ -14,8 +14,8 @@ import (
 )
 
 // App rate limiter implement token bucket algorithm
-func ARateLimiterMiddleware(skippers ...SkipperFunc) gin.HandlerFunc {
-	cfg := config.C.ARateLimiter
+func ARateLimiterMiddleware(conf config.AppConfiguration, skippers ...SkipperFunc) gin.HandlerFunc {
+	cfg := conf.ARateLimiter
 	if !cfg.Enable {
 		return EmptyMiddleware()
 	}
@@ -44,13 +44,13 @@ func ARateLimiterMiddleware(skippers ...SkipperFunc) gin.HandlerFunc {
 // Refs: https://github.com/LyricTian/gin-admin/blob/master/internal/app/middleware/mw_rate_limiter.go
 // https://www.alexedwards.net/blog/how-to-rate-limit-http-requests
 // TODO: ? sử dung version redis, redis_rate version cao hơn để có context
-func CRateLimiterMiddleware(skippers ...SkipperFunc) gin.HandlerFunc {
-	cfg := config.C.CRateLimiter
+func CRateLimiterMiddleware(conf config.AppConfiguration, skippers ...SkipperFunc) gin.HandlerFunc {
+	cfg := conf.CRateLimiter
 	if !cfg.Enable {
 		return EmptyMiddleware()
 	}
 
-	rc := config.C.Redis
+	rc := conf.Redis
 	ring := redis.NewRing(&redis.RingOptions{
 		Addrs: map[string]string{
 			"server1": rc.Addr,

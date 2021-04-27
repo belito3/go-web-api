@@ -1,7 +1,6 @@
 package service
 
 import (
-	"github.com/belito3/go-api-codebase/app/config"
 	"github.com/belito3/go-api-codebase/pkg/logger"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -12,7 +11,9 @@ import (
 // Refs: https://www.sohamkamani.com/golang/2019-01-01-jwt-authentication/
 // TODO: ranh bo sung refresh token
 // Create the JWT key used to create the signature
-var jwtKey = []byte(config.C.JWTSecretKey)
+//var jwtKey = []byte(config.C.JWTSecretKey)
+
+var jwtKey = []byte("my_secret_key")
 
 var users = map[string]string{
 	"app_key1": "secret_key1",

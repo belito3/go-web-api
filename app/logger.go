@@ -9,8 +9,8 @@ import (
 )
 
 // Configure Logging
-func setupLogger() {
-	c := config.C.Log
+func setupLogger(conf config.AppConfiguration) {
+	c := conf.Log
 	logger.SetLevel(c.Level)
 	logger.SetFormatter(c.Format)
 

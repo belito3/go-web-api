@@ -5,6 +5,8 @@ import (
 	"database/sql"
 )
 
+
+// TODO file nay nen move snag dep/dbsql
 type DBTX interface {
 	ExecContext(context.Context, string, ...interface{}) (sql.Result, error)
 	PrepareContext(context.Context, string) (*sql.Stmt, error)

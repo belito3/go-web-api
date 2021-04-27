@@ -7,8 +7,8 @@ import (
 	"go.uber.org/dig"
 )
 
-func InitGinEngine(container *dig.Container) *gin.Engine {
-	gin.SetMode(config.C.RunMode)
+func InitGinEngine(container *dig.Container, conf config.AppConfiguration) *gin.Engine {
+	gin.SetMode(conf.RunMode)
 
 	//app := gin.Default()
 	app := gin.New()
@@ -23,10 +23,10 @@ func InitGinEngine(container *dig.Container) *gin.Engine {
 	app.NoRoute(middleware.NoRouteHandler())
 
 	// rate_limit per client
-	app.Use(middleware.CRateLimiterMiddleware())
+	app.Use(middleware.CRateLimiterMiddleware(conf))
 
 	// rate_limit per app
-	app.Use(middleware.ARateLimiterMiddleware())
+	app.Use(middleware.ARateLimiterMiddleware(conf))
 
 	app.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
@@ -35,9 +35,8 @@ func InitGinEngine(container *dig.Container) *gin.Engine {
 	})
 
 	// CORS
-	if config.C.CORS.Enable {
-		app.Use(middleware.CORSMiddleware())
-	}
+	app.Use(middleware.CORSMiddleware())
+
 
 	// Router register
 	_ = ApplyRoutes(app, container)

@@ -10,11 +10,11 @@ import (
 	"go.uber.org/dig"
 )
 
-func InitStore(container *dig.Container) (func(), error) {
+func InitStore(container *dig.Container, conf config.AppConfiguration) (func(), error) {
 	// Init dbsql db
-	cfg2 := config.C.Postgres
+	cfg2 := conf.DBSQL
 	postgresDB, postgresCall, err := dbsql.NewDB(&dbsql.Config{
-		DriverName: "postgres",
+		DriverName: cfg2.DriverName,
 		DSN: cfg2.DSN(),
 		MaxLifetime: cfg2.MaxLifeTime,
 		MaxIdleConns: cfg2.MaxIdleConns,

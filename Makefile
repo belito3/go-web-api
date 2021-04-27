@@ -25,4 +25,7 @@ docker_build:
 docker_run:
 	docker-compose up
 
-.PHONY: postgres createdb dropdb migrateup migratedown build test docker_build docker_run
+server:
+	go run main.go
+
+.PHONY: postgres createdb dropdb migrateup migratedown build test docker_build docker_run server

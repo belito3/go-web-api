@@ -1,37 +1,39 @@
 package config
 
+import "C"
 import (
 	"fmt"
-	"github.com/belito3/go-api-codebase/pkg/logger"
 	"github.com/belito3/go-api-codebase/pkg/util"
-	"gopkg.in/yaml.v3"
-	"io/ioutil"
+	"github.com/spf13/viper"
 	"os"
+	"strings"
 )
 
 // Configuration ... The configuration of system
-var C = new(AppConfiguration)
+func LoadConfig(filePath string) (config AppConfiguration, err error){
+	viper.AddConfigPath(filePath)
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
-func Init(fileConf string){
-	// fileConf: file config path
-	//loadConfiguration
-	yamlFile, err := ioutil.ReadFile(fileConf)
-	if err != nil {
-		logger.Errorf(nil,"Can not load configuration file %v", err)
-	}
+	// It will check for an environment variable with a name matching
+	//the key uppercased and prefixed with the EnvPrefix if set
+	// TODO: Auto overwrite config from env variable (if existed) corresponding with yaml config default
+	// example yaml: http.port -> ENV: HTTP_PORT, http.max_content_length -> HTTP_MAX_CONTENT_LENGTH
+	viper.AutomaticEnv()
 
-	err = yaml.Unmarshal(yamlFile, &C)
+	err = viper.ReadInConfig()
 	if err != nil {
-		logger.Errorf(nil, "Can not load App Configuration %v", err)
+		return
 	}
+	err = viper.Unmarshal(&config)
+	fmt.Println("port: ", viper.GetString("HTTP_MAX_CONTENT_LENGTH"))
 
 	return
 }
 
 // Print With JSON
-func PrintWithJSON() {
-	if C.PrintConfig {
-		b, err := util.JSONMarshalIndent(C, "", " ")
+func PrintWithJSON(config AppConfiguration) {
+	if config.PrintConfig {
+		b, err := util.JSONMarshalIndent(config, "", " ")
 		if err != nil {
 			os.Stdout.WriteString("[CONFIG] JSON marshal error: " + err.Error())
 			return
@@ -42,84 +44,76 @@ func PrintWithJSON() {
 
 // Configuration ... The configuration of system
 type AppConfiguration struct {
-	HTTP					HTTP			`yaml:"http"`
-	PrintConfig  			bool			`yaml:"print_config"`
-	RunMode					string			`yaml:"run_mode"`
-	CORS					CORS			`yaml:"cors"`
-	Log						Log				`yaml:"log"`
-	UniqueID				UniqueID		`yaml:"unique_id"`
-	JWTSecretKey            string 			`yaml:"jwt_secret_key"`
-	ARateLimiter			ARateLimiter	`yaml:"app_rate_limiter"`
-	CRateLimiter			CRateLimiter	`yaml:"client_rate_limiter"`
-	Redis					Redis			`yaml:"redis"`
-	Postgres				Postgres		`yaml:"postgres"`
+	HTTP					HTTP			`mapstructure:"http"`
+	PrintConfig  			bool			`mapstructure:"print_config"`
+	RunMode					string			`mapstructure:"run_mode"`
+	Log						Log				`mapstructure:"log"`
+	UniqueID				UniqueID		`mapstructure:"unique_id"`
+	JWTSecretKey            string 			`mapstructure:"jwt_secret_key"`
+	ARateLimiter			ARateLimiter	`mapstructure:"app_rate_limiter"`
+	CRateLimiter			CRateLimiter	`mapstructure:"client_rate_limiter"`
+	Redis					Redis			`mapstructure:"redis"`
+	DBSQL					DBSQL			`mapstructure:"dbsql"`
 }
+
 
 // HTTP http
 type HTTP struct {
-	Host				string		`yaml:"host"`
-	Port				int			`yaml:"port"`
-	ShutdownTimeout		int			`yaml:"shutdown_timeout"`
-	MaxContentLength	int64		`yaml:"max_content_length"`
+	Host				string		`mapstructure:"host"`
+	Port				int			`mapstructure:"port"`
+	ShutdownTimeout		int			`mapstructure:"shutdown_timeout"`
+	MaxContentLength	int64		`mapstructure:"max_content_length"`
 }
 
-// CORS Cross-domain request configuration parameters
-type CORS struct {
-	Enable					bool		`yaml:"enable"`
-	AllowOrigins			string		`yaml:"allow_origins"`
-	AllowMethods			string		`yaml:"allow_methods"`
-	AllowHeaders			string		`yaml:"allow_headers"`
-	AllowCredentials		string		`yaml:"allow_credentials"`
-	MaxAge					string		`yaml:"max_age"`
-}
 
 // Log
 type Log struct {
-	Level		int			`yaml:"level"`
-	Format 		string		`yaml:"format"`
+	Level		int			`mapstructure:"level"`
+	Format 		string		`mapstructure:"format"`
 }
 
 // UniqueID
 type UniqueID struct {
-	Type		string		`yaml:"type"`
+	Type		string		`mapstructure:"type"`
 	Snowflake	struct {
-		Node	int64		`yaml:"node"`
-		Epoch	int64		`yaml:"epoch"`
+		Node	int64		`mapstructure:"node"`
+		Epoch	int64		`mapstructure:"epoch"`
 	}
 }
 
 // App RateLimiter
 type ARateLimiter struct {
-	Enable		bool	`yaml:"enable"`
-	Count		int		`yaml:"count"`
+	Enable		bool	`mapstructure:"enable"`
+	Count		int		`mapstructure:"count"`
 }
 
 // Client RateLimiter Request frequency limit configuration parameters
 type CRateLimiter struct {
-	Enable		bool	`yaml:"enable"`
-	Count		int		`yaml:"count"`
-	RedisDB 	int		`yaml:"redis_db"`
+	Enable		bool	`mapstructure:"enable"`
+	Count		int		`mapstructure:"count"`
+	RedisDB 	int		`mapstructure:"redis_db"`
 }
 
 // Redis redis Configuration parameter
 type Redis struct {
-	Addr		string		`yaml:"addr"`
-	Password	string		`yaml:"password"`
+	Addr		string		`mapstructure:"addr"`
+	Password	string		`mapstructure:"password"`
 }
 
-// PostgreSQL Postgres config
-type Postgres struct {
-	Username		string		`yaml:"username"`
-	Password		string		`yaml:"password"`
-	Host			string		`yaml:"host"`
-	Port			int			`yaml:"port"`
-	DatabaseName	string		`yaml:"database_name"`
-	MaxLifeTime		int			`yaml:"max_life_time"`
-	MaxOpenConns	int			`yaml:"max_open_conns"`
-	MaxIdleConns	int			`yaml:"max_idle_conns"`
+// DBSQL  config
+type DBSQL struct {
+	DriverName		string		`mapstructure:"driver_name"`
+	Username		string		`mapstructure:"username"`
+	Password		string		`mapstructure:"password"`
+	Host			string		`mapstructure:"host"`
+	Port			int			`mapstructure:"port"`
+	DatabaseName	string		`mapstructure:"database_name"`
+	MaxLifeTime		int			`mapstructure:"max_life_time"`
+	MaxOpenConns	int			`mapstructure:"max_open_conns"`
+	MaxIdleConns	int			`mapstructure:"max_idle_conns"`
 }
 
-// DSN connect Postgres
-func (a Postgres) DSN() string {
+// DSN connect
+func (a DBSQL) DSN() string {
 	return fmt.Sprintf("postgresql://%s:%s@%s:%v/%s?sslmode=disable", a.Username, a.Password, a.Host, a.Port, a.DatabaseName)
 }
