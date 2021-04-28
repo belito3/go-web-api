@@ -22,4 +22,4 @@ COPY app/config/config.yaml .
 VOLUME [${LOG_DIR}]
 
 # Command to run the executable
-CMD ["./main", "--config", "./config.yaml"]
+CMD ["./main", "--config", "./"]

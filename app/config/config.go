@@ -1,6 +1,5 @@
 package config
 
-import "C"
 import (
 	"fmt"
 	"github.com/belito3/go-api-codebase/pkg/util"
