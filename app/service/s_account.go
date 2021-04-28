@@ -9,11 +9,11 @@ import (
 )
 
 type AccountService struct {
-	AccRepo repo.IAccount
+	store 	repo.IStore
 }
 
-func NewAccountService(accRepo repo.IAccount) *AccountService {
-	return &AccountService{AccRepo: accRepo}
+func NewAccountService(store repo.IStore) *AccountService {
+	return &AccountService{store: store}
 }
 
 func (s *AccountService) Add(c *gin.Context) {
@@ -25,7 +25,7 @@ func (s *AccountService) Add(c *gin.Context) {
 		ResponseError(c, http.StatusBadRequest, fmt.Sprintf("Invalid input parameter: %v", err))
 		return
 	}
-	account, err := s.AccRepo.CreateAccount(ctx, arg)
+	account, err := s.store.CreateAccount(ctx, arg)
 	if err != nil {
 		logger.Errorf(ctx, "Add account error %v\n", err)
 		ResponseError(c, http.StatusInternalServerError, err.Error())

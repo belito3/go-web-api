@@ -3,8 +3,6 @@ package impl
 import (
 	"database/sql"
 	"github.com/belito3/go-api-codebase/app/config"
-	"github.com/belito3/go-api-codebase/app/repository"
-
 	"log"
 	"os"
 	"testing"
@@ -18,9 +16,7 @@ import (
 //)
 
 var testDB *sql.DB
-var testAccountImpl repository.IAccount
-var testEntryImpl repository.IEntry
-var testTransferImpl repository.ITransfer
+var testQueries  *Queries
 
 func TestMain(m *testing.M) {
 	var err error
@@ -33,9 +29,7 @@ func TestMain(m *testing.M) {
 		log.Fatal("cannot connect to db: ", err)
 	}
 
-	testAccountImpl = NewAccountImpl(testDB)
-	testEntryImpl = NewEntryImpl(testDB)
-	testTransferImpl = NewTransferImpl(testDB)
+	testQueries = NewQueries(testDB)
 
 	os.Exit(m.Run())
 }

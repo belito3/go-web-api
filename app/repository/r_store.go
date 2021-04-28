@@ -20,6 +20,7 @@ type TransferTxResult struct {
 	ToEntry     Entry    `json:"to_entry"`
 }
 
+// Store define all functions to execute db queries and transaction
 type IStore interface {
 	IAccount
 	IEntry

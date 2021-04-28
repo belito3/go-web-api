@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"database/sql"
 	"github.com/belito3/go-api-codebase/app/config"
 	"github.com/belito3/go-api-codebase/app/dep/dbsql"
 	"github.com/belito3/go-api-codebase/app/repository/impl"
@@ -13,7 +14,7 @@ import (
 func InitStore(container *dig.Container, conf config.AppConfiguration) (func(), error) {
 	// Init dbsql db
 	cfg2 := conf.DBSQL
-	postgresDB, postgresCall, err := dbsql.NewDB(&dbsql.Config{
+	sqlDB, sqlDBCall, err := dbsql.NewDB(&dbsql.Config{
 		DriverName: cfg2.DriverName,
 		DSN: cfg2.DSN(),
 		MaxLifetime: cfg2.MaxLifeTime,
@@ -23,8 +24,8 @@ func InitStore(container *dig.Container, conf config.AppConfiguration) (func(), 
 		return nil, err
 	}
 
-	_ = container.Provide(func() impl.DBTX {
-		return postgresDB
+	_ = container.Provide(func() *sql.DB {
+		return sqlDB
 	})
 
 	// TODO: gen unique client id
@@ -35,6 +36,6 @@ func InitStore(container *dig.Container, conf config.AppConfiguration) (func(), 
 	_ = impl.Inject(container)
 
 	return func() {
-		postgresCall()
+		sqlDBCall()
 	}, err
 }

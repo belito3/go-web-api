@@ -9,6 +9,7 @@ require (
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-redis/redis/v8 v8.0.0-beta.7
 	github.com/go-redis/redis_rate/v9 v9.0.1
+	github.com/golang/mock v1.5.0 // indirect
 	github.com/google/uuid v1.1.1
 	github.com/json-iterator/go v1.1.7
 	github.com/leodido/go-urn v1.2.0 // indirect

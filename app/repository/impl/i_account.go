@@ -11,11 +11,13 @@ type AccountImpl struct {
 	*Queries
 }
 
-type Account = model.Account
 
 func NewAccountImpl(db DBTX) repo.IAccount {
 	return &AccountImpl{NewQueries(db)}
 }
+
+type Account = model.Account
+
 
 func (a *Queries) AddAccountBalance(ctx context.Context, arg repo.AddAccountBalanceParams) (Account, error) {
 	query := `UPDATE accounts
