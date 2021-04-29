@@ -5,7 +5,7 @@
 - `Middleware` rate limit, authentication: jwt
 - `Unit test` test real db and mock test
 - `Logger` customer, write logs to file
-- `Database` implement db transaction
+- `Database` implement db queries and transaction
 - `Run` app with minimal docker image 
 - `CI` Github action
 
