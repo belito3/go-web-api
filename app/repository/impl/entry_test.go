@@ -2,7 +2,6 @@ package impl
 
 import (
 	"context"
-	repo "github.com/belito3/go-api-codebase/app/repository"
 	"github.com/belito3/go-api-codebase/app/util"
 	"github.com/belito3/go-api-codebase/pkg/logger"
 	"testing"
@@ -12,7 +11,7 @@ import (
 )
 
 func createRandomEntry(t *testing.T, account Account) Entry {
-	arg := repo.CreateEntryParams{
+	arg := CreateEntryParams{
 		AccountID: account.ID,
 		Amount:    util.RandomMoney(),
 	}
@@ -53,7 +52,7 @@ func TestListEntries(t *testing.T) {
 		createRandomEntry(t, account)
 	}
 
-	arg := repo.ListEntriesParams{
+	arg := ListEntriesParams{
 		AccountID: account.ID,
 		Limit:     5,
 		Offset:    5,

@@ -3,7 +3,6 @@ package impl
 import (
 	"context"
 	"database/sql"
-	repo "github.com/belito3/go-api-codebase/app/repository"
 	"github.com/belito3/go-api-codebase/app/util"
 	"testing"
 	"time"
@@ -12,7 +11,7 @@ import (
 )
 
 func createRandomAccount(t *testing.T) Account {
-	arg := repo.CreateAccountParams{
+	arg := CreateAccountParams{
 		Owner:    util.RandomOwner(),
 		Balance:  util.RandomMoney(),
 		Currency: util.RandomCurrency(),
@@ -50,7 +49,7 @@ func TestGetAccount(t *testing.T) {
 func TestUpdateAccount(t *testing.T) {
 	account1 := createRandomAccount(t)
 
-	arg := repo.UpdateAccountParams{
+	arg := UpdateAccountParams{
 		ID:      account1.ID,
 		Balance: util.RandomMoney(),
 	}
@@ -83,7 +82,7 @@ func TestListAccount(t *testing.T) {
 		createRandomAccount(t)
 	}
 
-	arg := repo.ListAccountsParams{
+	arg := ListAccountsParams{
 		Limit: 5,
 		Offset: 5,
 	}

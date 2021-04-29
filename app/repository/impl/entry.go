@@ -3,20 +3,30 @@ package impl
 import (
 	"context"
 	"github.com/belito3/go-api-codebase/app/model"
-	repo "github.com/belito3/go-api-codebase/app/repository"
 )
 
-type EntryImpl struct {
-	*Queries
-}
 
 type Entry = model.Entry
 
-func NewEntryImpl(db DBTX) repo.IEntry {
-	return &EntryImpl{NewQueries(db)}
+type CreateEntryParams struct {
+	AccountID	int64	`json:"account_id"`
+	Amount		int64	`json:"amount"`
 }
 
-func(a *Queries) CreateEntry(ctx context.Context, arg repo.CreateEntryParams) (Entry, error) {
+type ListEntriesParams struct {
+	AccountID 	int64	`json:"account_id"`
+	Limit		int32	`json:"limit"`
+	Offset		int32	`json:"offset"`
+}
+
+type IEntry interface {
+	CreateEntry(ctx context.Context, arg CreateEntryParams) (Entry, error)
+	GetEntry(ctx context.Context, id int64) (Entry, error)
+	ListEntries(ctx context.Context, arg ListEntriesParams) ([]Entry, error)
+}
+
+
+func(a *Queries) CreateEntry(ctx context.Context, arg CreateEntryParams) (Entry, error) {
 	query := `INSERT INTO entries (account_id, amount) VALUES ($1, $2) RETURNING *`
 	var i Entry
 
@@ -45,7 +55,7 @@ func(a *Queries) GetEntry(ctx context.Context, id int64) (Entry, error) {
 	return i, err
 }
 
-func(a *Queries) ListEntries(ctx context.Context, arg repo.ListEntriesParams) ([]Entry, error) {
+func(a *Queries) ListEntries(ctx context.Context, arg ListEntriesParams) ([]Entry, error) {
 	query := `SELECT id, account_id, amount, created_at FROM entries WHERE account_id = $1 ORDER BY id LIMIT $2 OFFSET $3`
 
 	rows, err := a.db.QueryContext(ctx, query, arg.AccountID, arg.Limit, arg.Offset)

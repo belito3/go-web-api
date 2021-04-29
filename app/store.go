@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"github.com/belito3/go-api-codebase/app/config"
-	"github.com/belito3/go-api-codebase/app/dep/dbsql"
 	"github.com/belito3/go-api-codebase/app/repository/impl"
 	"github.com/belito3/go-api-codebase/app/util"
 	"github.com/belito3/go-api-codebase/pkg/logger"
@@ -14,7 +13,7 @@ import (
 func InitStore(container *dig.Container, conf config.AppConfiguration) (func(), error) {
 	// Init dbsql db
 	cfg2 := conf.DBSQL
-	sqlDB, sqlDBCall, err := dbsql.NewDB(&dbsql.Config{
+	sqlDB, sqlDBCall, err := impl.NewDB(&impl.Config{
 		DriverName: cfg2.DriverName,
 		DSN: cfg2.DSN(),
 		MaxLifetime: cfg2.MaxLifeTime,

@@ -3,7 +3,6 @@ package impl
 import (
 	"context"
 	"fmt"
-	repo "github.com/belito3/go-api-codebase/app/repository"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -20,14 +19,14 @@ func TestTransfer(t *testing.T) {
 	amount := int64(10)
 
 	errs := make(chan error)
-	results := make(chan repo.TransferTxResult)
+	results := make(chan TransferTxResult)
 
 	// run n concurrent transfer transaction
 	for i := 0; i < n; i++ {
 		txName := fmt.Sprintf("tx %d", i+1)
 		go func() {
 			ctx := context.WithValue(context.Background(), txKey, txName)
-			result, err := store.TransferTx(ctx, repo.TransferTxParams{
+			result, err := store.TransferTx(ctx, TransferTxParams{
 				FromAccountID: account1.ID,
 				ToAccountID:   account2.ID,
 				Amount:        amount,
@@ -126,14 +125,14 @@ func TestTransfer2(t *testing.T) {
 	amount := int64(10)
 
 	errs := make(chan error)
-	results := make(chan repo.TransferTxResult)
+	results := make(chan TransferTxResult)
 
 	// run n concurrent transfer transaction
 	for i := 0; i < n; i++ {
 		txName := fmt.Sprintf("tx %d", i+1)
 		go func() {
 			ctx := context.WithValue(context.Background(), txKey, txName)
-			result, err := store.TransferTx2(ctx, repo.TransferTxParams{
+			result, err := store.TransferTx2(ctx, TransferTxParams{
 				FromAccountID: account1.ID,
 				ToAccountID:   account2.ID,
 				Amount:        amount,
@@ -249,7 +248,7 @@ func TestTransferDeadLock(t *testing.T) {
 
 		go func() {
 			ctx := context.WithValue(context.Background(), txKey, txName)
-			_, err := store.TransferTx(ctx, repo.TransferTxParams{
+			_, err := store.TransferTx(ctx, TransferTxParams{
 				FromAccountID: fromAccountID,
 				ToAccountID:   toAccountID,
 				Amount:        amount,

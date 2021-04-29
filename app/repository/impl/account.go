@@ -3,23 +3,45 @@ package impl
 import (
 	"context"
 	"github.com/belito3/go-api-codebase/app/model"
-	repo "github.com/belito3/go-api-codebase/app/repository"
 	"github.com/belito3/go-api-codebase/pkg/errors"
 )
 
-type AccountImpl struct {
-	*Queries
-}
-
-
-func NewAccountImpl(db DBTX) repo.IAccount {
-	return &AccountImpl{NewQueries(db)}
-}
 
 type Account = model.Account
 
+type AddAccountBalanceParams struct {
+	Amount int64 `json:"amount"`
+	ID     int64 `json:"id"`
+}
 
-func (a *Queries) AddAccountBalance(ctx context.Context, arg repo.AddAccountBalanceParams) (Account, error) {
+type CreateAccountParams struct {
+	Owner    string `json:"owner"`
+	Balance  int64  `json:"balance"`
+	Currency string `json:"currency"`
+}
+
+type ListAccountsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+type UpdateAccountParams struct {
+	ID      int64 `json:"id"`
+	Balance int64 `json:"balance"`
+}
+
+type IAccount interface {
+	AddAccountBalance(ctx context.Context, arg AddAccountBalanceParams) (Account, error)
+	CreateAccount(ctx context.Context, arg CreateAccountParams) (Account, error)
+	GetAccount(ctx context.Context, id int64) (Account, error)
+	UpdateAccount(ctx context.Context, arg UpdateAccountParams) (Account, error)
+	DeleteAccount(ctx context.Context, id int64) error
+	GetAccountForUpdate(ctx context.Context, id int64) (Account, error)
+	ListAccount(ctx context.Context, arg ListAccountsParams) ([]Account, error)
+}
+
+
+func (a *Queries) AddAccountBalance(ctx context.Context, arg AddAccountBalanceParams) (Account, error) {
 	query := `UPDATE accounts
 		SET balance = balance + $1
 		WHERE id = $2
@@ -39,7 +61,7 @@ func (a *Queries) AddAccountBalance(ctx context.Context, arg repo.AddAccountBala
 
 // TODO: insert return value ở oracle phải dùng script procedure lằng nhằng quá
 // nên chuyển qua dbsql
-func (a *Queries) CreateAccount(ctx context.Context, arg repo.CreateAccountParams) (Account, error) {
+func (a *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (Account, error) {
 	query := `INSERT INTO accounts (owner, balance, currency) 
 			VALUES ($1, $2, $3) RETURNING *`
 
@@ -71,7 +93,7 @@ func (a *Queries) GetAccount(ctx context.Context, id int64) (Account, error) {
 	return i, err
 }
 
-func (a *Queries) UpdateAccount(ctx context.Context, arg repo.UpdateAccountParams) (Account, error) {
+func (a *Queries) UpdateAccount(ctx context.Context, arg UpdateAccountParams) (Account, error) {
 	query := `UPDATE accounts SET balance = $2 WHERE id = $1 
 			RETURNING id, owner, balance, currency, created_at`
 
@@ -117,7 +139,7 @@ func (a *Queries) GetAccountForUpdate(ctx context.Context, id int64) (Account, e
 	return i, err
 }
 
-func (a *Queries) ListAccount(ctx context.Context, arg repo.ListAccountsParams) ([]Account, error) {
+func (a *Queries) ListAccount(ctx context.Context, arg ListAccountsParams) ([]Account, error) {
 	query := `SELECT id, owner, balance, currency, created_at FROM accounts 
 			ORDER BY id LIMIT $1 OFFSET $2`
 	// query := "SELECT id, owner, balance, currency, created_at FROM accounts ORDER BY id LIMIT $1 OFFSET $2"

@@ -2,7 +2,6 @@ package impl
 
 import (
 	"context"
-	repo "github.com/belito3/go-api-codebase/app/repository"
 	"github.com/belito3/go-api-codebase/app/util"
 	"testing"
 	"time"
@@ -11,7 +10,7 @@ import (
 )
 
 func createRandomTransfer(t *testing.T, account1, account2 Account) Transfer {
-	arg := repo.CreateTransferParams{
+	arg := CreateTransferParams{
 		FromAccountID: account1.ID,
 		ToAccountID:   account2.ID,
 		Amount:        util.RandomMoney(),
@@ -60,7 +59,7 @@ func TestListTransfer(t *testing.T) {
 		createRandomTransfer(t, account1, account2)
 	}
 
-	arg := repo.ListTransfersParams{
+	arg := ListTransfersParams{
 		FromAccountID: account1.ID,
 		ToAccountID: account2.ID,
 		Limit: 5,
