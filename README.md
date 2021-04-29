@@ -1,13 +1,13 @@
 # Go web api
-- Gin + Postgres
-- Graceful shutdown
-- Config: read from a file and environment variables  
-- Middleware: rate limit, authentication: jwt
-- Unit test: test real db and mock test
-- Logger: customer, write logs to file
-- Database: implement transaction
-- Run app with minimal docker image 
-- CI: Github action
+- `Gin + Postgres`
+- `Graceful shutdown`
+- `Config` read from a file and environment variables  
+- `Middleware` rate limit, authentication: jwt
+- `Unit test` test real db and mock test
+- `Logger` customer, write logs to file
+- `Database` implement db transaction
+- `Run` app with minimal docker image 
+- `CI` Github action
 
 ### 1. Install 
 - Install go-migrate: https://github.com/golang-migrate/migrate/tree/master/cmd/migrate
