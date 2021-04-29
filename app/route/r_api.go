@@ -1,7 +1,7 @@
 package route
 
 import (
-	"github.com/belito3/go-api-codebase/app/service"
+	"github.com/belito3/go-web-api/app/service"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/dig"
 )

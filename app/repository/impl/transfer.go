@@ -2,7 +2,7 @@ package impl
 
 import (
 	"context"
-	"github.com/belito3/go-api-codebase/app/model"
+	"github.com/belito3/go-web-api/app/model"
 )
 
 //type TransferImpl struct {

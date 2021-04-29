@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"fmt"
-	"github.com/belito3/go-api-codebase/pkg/app"
-	"github.com/belito3/go-api-codebase/pkg/errors"
+	"github.com/belito3/go-web-api/pkg/app"
+	"github.com/belito3/go-web-api/pkg/errors"
 	"github.com/gin-gonic/gin"
 	"strings"
 )

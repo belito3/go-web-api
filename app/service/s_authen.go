@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/belito3/go-api-codebase/pkg/logger"
+	"github.com/belito3/go-web-api/pkg/logger"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"net/http"

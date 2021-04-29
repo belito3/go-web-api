@@ -3,7 +3,7 @@ package impl
 import (
 	"context"
 	"database/sql"
-	"github.com/belito3/go-api-codebase/pkg/logger"
+	"github.com/belito3/go-web-api/pkg/logger"
 	_ "github.com/lib/pq"
 	"time"
 )

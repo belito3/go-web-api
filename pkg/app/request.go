@@ -1,7 +1,7 @@
 package app
 
 import (
-	"github.com/belito3/go-api-codebase/pkg/errors"
+	"github.com/belito3/go-web-api/pkg/errors"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"strings"

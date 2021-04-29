@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/belito3/go-api-codebase/app"
-	"github.com/belito3/go-api-codebase/app/config"
-	"github.com/belito3/go-api-codebase/pkg/logger"
+	"github.com/belito3/go-web-api/app"
+	"github.com/belito3/go-web-api/app/config"
+	"github.com/belito3/go-web-api/pkg/logger"
 )
 
 // VERSION: go build -ldflags "-X main.VERSION=x.x.x"

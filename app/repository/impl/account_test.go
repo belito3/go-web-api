@@ -3,7 +3,7 @@ package impl
 import (
 	"context"
 	"database/sql"
-	"github.com/belito3/go-api-codebase/app/util"
+	"github.com/belito3/go-web-api/app/util"
 	"testing"
 	"time"
 

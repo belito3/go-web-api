@@ -2,8 +2,8 @@ package app
 
 import (
 	"fmt"
-	"github.com/belito3/go-api-codebase/app/config"
-	"github.com/belito3/go-api-codebase/pkg/logger"
+	"github.com/belito3/go-web-api/app/config"
+	"github.com/belito3/go-web-api/pkg/logger"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"os"
 )

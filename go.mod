@@ -1,4 +1,4 @@
-module github.com/belito3/go-api-codebase
+module github.com/belito3/go-web-api
 
 go 1.16
 

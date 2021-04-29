@@ -3,9 +3,9 @@ package util
 import (
 	"context"
 	"encoding/json"
-	"github.com/belito3/go-api-codebase/app/config"
-	"github.com/belito3/go-api-codebase/pkg/logger"
-	"github.com/belito3/go-api-codebase/pkg/unique"
+	"github.com/belito3/go-web-api/app/config"
+	"github.com/belito3/go-web-api/pkg/logger"
+	"github.com/belito3/go-web-api/pkg/unique"
 )
 
 var idFunc = func() string {

@@ -2,7 +2,7 @@ package impl
 
 import (
 	"database/sql"
-	"github.com/belito3/go-api-codebase/app/config"
+	"github.com/belito3/go-web-api/app/config"
 	"log"
 	"os"
 	"testing"

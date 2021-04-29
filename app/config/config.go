@@ -2,7 +2,7 @@ package config
 
 import (
 	"fmt"
-	"github.com/belito3/go-api-codebase/pkg/util"
+	"github.com/belito3/go-web-api/pkg/util"
 	"github.com/spf13/viper"
 	"os"
 	"strings"

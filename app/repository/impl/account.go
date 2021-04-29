@@ -2,8 +2,8 @@ package impl
 
 import (
 	"context"
-	"github.com/belito3/go-api-codebase/app/model"
-	"github.com/belito3/go-api-codebase/pkg/errors"
+	"github.com/belito3/go-web-api/app/model"
+	"github.com/belito3/go-web-api/pkg/errors"
 )
 
 

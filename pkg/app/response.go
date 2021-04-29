@@ -1,8 +1,8 @@
 package app
 
 import (
-	"github.com/belito3/go-api-codebase/pkg/errors"
-	"github.com/belito3/go-api-codebase/pkg/logger"
+	"github.com/belito3/go-web-api/pkg/errors"
+	"github.com/belito3/go-web-api/pkg/logger"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"github.com/belito3/go-api-codebase/pkg/logger"
+	"github.com/belito3/go-web-api/pkg/logger"
 	"github.com/gin-gonic/gin"
 )
 

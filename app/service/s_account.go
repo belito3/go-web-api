@@ -2,8 +2,8 @@ package service
 
 import (
 	"fmt"
-	"github.com/belito3/go-api-codebase/app/repository/impl"
-	"github.com/belito3/go-api-codebase/pkg/logger"
+	"github.com/belito3/go-web-api/app/repository/impl"
+	"github.com/belito3/go-web-api/pkg/logger"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

@@ -3,10 +3,10 @@ package app
 import (
 	"context"
 	"database/sql"
-	"github.com/belito3/go-api-codebase/app/config"
-	"github.com/belito3/go-api-codebase/app/repository/impl"
-	"github.com/belito3/go-api-codebase/app/util"
-	"github.com/belito3/go-api-codebase/pkg/logger"
+	"github.com/belito3/go-web-api/app/config"
+	"github.com/belito3/go-web-api/app/repository/impl"
+	"github.com/belito3/go-web-api/app/util"
+	"github.com/belito3/go-web-api/pkg/logger"
 	"go.uber.org/dig"
 )
 

@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"fmt"
-	"github.com/belito3/go-api-codebase/app/config"
-	"github.com/belito3/go-api-codebase/app/service"
+	"github.com/belito3/go-web-api/app/config"
+	"github.com/belito3/go-web-api/app/service"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 	"github.com/go-redis/redis_rate/v9"
