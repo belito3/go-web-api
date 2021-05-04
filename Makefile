@@ -28,4 +28,7 @@ docker_run:
 server:
 	go run main.go
 
-.PHONY: postgres createdb dropdb migrateup migratedown build test docker_build docker_run server
+mock:
+	mockgen -package mockdb -destination app/repository/mock/store.go github.com/belito3/go-web-api/app/repository/impl IStore
+
+.PHONY: postgres createdb dropdb migrateup migratedown build test docker_build docker_run server mock

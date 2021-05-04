@@ -1,10 +1,6 @@
-package service
+package api
 
-import (
-	"go.uber.org/dig"
-)
-
-func Inject(container *dig.Container) error {
-	_ = container.Provide(NewAccountService)
-	return nil
+func (s *Server) injectAPIHandle() error {
+	err := s.container.Provide(NewAccount)
+	return err
 }

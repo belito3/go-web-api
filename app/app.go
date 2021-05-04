@@ -2,24 +2,26 @@ package app
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
-	"github.com/belito3/go-web-api/app/config"
-	"github.com/belito3/go-web-api/app/route"
-	"github.com/belito3/go-web-api/app/service"
-	"github.com/belito3/go-web-api/app/util"
-	"github.com/belito3/go-web-api/pkg/logger"
-	"go.uber.org/dig"
 	"net/http"
 	"os"
 	"os/signal"
 	"sync/atomic"
 	"syscall"
 	"time"
+
+	"github.com/belito3/go-web-api/app/api"
+	"github.com/belito3/go-web-api/app/config"
+	"github.com/belito3/go-web-api/app/repository/impl"
+	"github.com/belito3/go-web-api/app/util"
+	"github.com/belito3/go-web-api/pkg/logger"
+	"go.uber.org/dig"
 )
 
 type options struct {
-	AppConf	config.AppConfiguration
-	Version		string
+	AppConf config.AppConfiguration
+	Version string
 }
 
 // Option
@@ -57,26 +59,27 @@ func Run(ctx context.Context, opts ...Option) error {
 		return err
 	}
 
-	EXIT:
-		for {
-			sig := <- sc
-			logger.Printf(ctx, "Received a signal[%s]", sig.String())
-			switch sig {
-			case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
-				atomic.CompareAndSwapInt32(&state, 1, 0)
-				break EXIT
-			case syscall.SIGHUP:
-			default:
-				break EXIT
-			}
+EXIT:
+	for {
+		sig := <-sc
+		logger.Printf(ctx, "Received a signal[%s]", sig.String())
+		switch sig {
+		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
+			atomic.CompareAndSwapInt32(&state, 1, 0)
+			break EXIT
+		case syscall.SIGHUP:
+		default:
+			break EXIT
 		}
+	}
 
-		cleanFunc()
-		logger.Printf(ctx, "Service exit")
-		time.Sleep(time.Second)
-		os.Exit(int(atomic.LoadInt32(&state)))
-		return nil
+	cleanFunc()
+	logger.Printf(ctx, "Service exit")
+	time.Sleep(time.Second)
+	os.Exit(int(atomic.LoadInt32(&state)))
+	return nil
 }
+
 
 // Init
 func Init(ctx context.Context, opts ...Option) (func(), error) {
@@ -105,16 +108,12 @@ func Init(ctx context.Context, opts ...Option) (func(), error) {
 	}, nil
 }
 
-
 func BuildContainer(conf config.AppConfiguration) (*dig.Container, func()) {
+	// Inject store and api with container
 	container := dig.New()
 
 	// store DB
 	storeCall, err := InitStore(container, conf)
-	handleError(err)
-
-	// register service
-	err = service.Inject(container)
 	handleError(err)
 
 	return container, func() {
@@ -124,14 +123,13 @@ func BuildContainer(conf config.AppConfiguration) (*dig.Container, func()) {
 	}
 }
 
-
 func InitHTTPServer(ctx context.Context, container *dig.Container, conf config.AppConfiguration) func() {
 	cfg := conf.HTTP
 	addr := fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)
-
+	server := api.NewServer(conf, container)
 	srv := &http.Server{
-		Addr: addr,
-		Handler: route.InitGinEngine(container, conf),
+		Addr:    addr,
+		Handler: server.InitGinEngine(),
 		//ReadTimeout: 5 * time.Second,
 		//WriteTimeout: 10 * time.Second,
 		//IdleTimeout: 15 * time.Second,
@@ -146,9 +144,9 @@ func InitHTTPServer(ctx context.Context, container *dig.Container, conf config.A
 	}()
 
 	return func() {
-		// Wait for interrupt signal to gracefully shutdown the app with
+		//TODO: Wait for interrupt signal to gracefully shutdown the app with
 		// a timeout
-		ctx, cancel := context.WithTimeout(ctx, time.Second * time.Duration(cfg.ShutdownTimeout))
+		ctx, cancel := context.WithTimeout(ctx, time.Second*time.Duration(cfg.ShutdownTimeout))
 		defer cancel()
 
 		srv.SetKeepAlivesEnabled(false)
@@ -158,9 +156,38 @@ func InitHTTPServer(ctx context.Context, container *dig.Container, conf config.A
 	}
 }
 
+func InitStore(container *dig.Container, conf config.AppConfiguration) (func(), error) {
+	// Init dbsql db
+	cfg2 := conf.DBSQL
+	sqlDB, sqlDBCall, err := impl.NewDB(&impl.Config{
+		DriverName:   cfg2.DriverName,
+		DSN:          cfg2.DSN(),
+		MaxLifetime:  cfg2.MaxLifeTime,
+		MaxIdleConns: cfg2.MaxIdleConns,
+		MaxOpenConns: cfg2.MaxOpenConns})
+	if err != nil {
+		return nil, err
+	}
+
+	_ = container.Provide(func() *sql.DB {
+		return sqlDB
+	})
+
+	// TODO: gen unique client id
+	ctx := context.Background()
+	clientId := util.NewID()
+
+	logger.Infof(ctx, "client id: %v", clientId)
+	_ = impl.Inject(container)
+
+	return func() {
+		sqlDBCall()
+	}, err
+}
+
+
 func handleError(err error) {
 	if err != nil {
 		panic(err)
 	}
 }
-

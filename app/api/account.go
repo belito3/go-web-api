@@ -1,4 +1,4 @@
-package service
+package api
 
 import (
 	"fmt"
@@ -8,12 +8,12 @@ import (
 	"net/http"
 )
 
-type AccountService struct {
+type Account struct {
 	store 	impl.IStore
 }
 
-func NewAccountService(store impl.IStore) *AccountService {
-	return &AccountService{store: store}
+func NewAccount(store impl.IStore) *Account {
+	return &Account{store: store}
 }
 
 type createAccountRequest struct {
@@ -21,7 +21,7 @@ type createAccountRequest struct {
 	Currency 	string	`json:"currency" binding:"required,oneof=USD EUR"`
 }
 
-func (s *AccountService) CreateAccount(c *gin.Context) {
+func (s *Account) createAccount(c *gin.Context) {
 	// Add account
 	ctx := c.Request.Context()
 	var req createAccountRequest
@@ -53,7 +53,7 @@ type getAccountRequest struct {
 	ID int64 `uri:"id" binding:"required,min=1"`
 }
 
-func (s *AccountService) GetAccount(c *gin.Context) {
+func (s *Account) getAccount(c *gin.Context) {
 	ctx := c.Request.Context()
 	var req getAccountRequest
 	if err := c.ShouldBindUri(&req); err != nil {

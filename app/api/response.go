@@ -1,8 +1,6 @@
-package service
+package api
 
-import (
-	"github.com/gin-gonic/gin"
-)
+import "github.com/gin-gonic/gin"
 
 /*
 error
@@ -12,7 +10,6 @@ error
 	"description": "Forbidden: bot can't send messages to bots"
 }
 */
-
 
 /*
 success
@@ -27,13 +24,12 @@ success
 }
 */
 
-
 type ResultSuccess struct {
-	OK bool `json:"ok"`
+	OK     bool                   `json:"ok"`
 	Result map[string]interface{} `json:"result"`
 }
 
-func ResponseSuccess(c *gin.Context, statusCode int, result map[string]interface{}){
+func responseSuccess(c *gin.Context, statusCode int, result map[string]interface{}) {
 	rs := ResultSuccess{
 		OK:     true,
 		Result: result,
@@ -42,12 +38,10 @@ func ResponseSuccess(c *gin.Context, statusCode int, result map[string]interface
 }
 
 // responseError
-func ResponseError(c *gin.Context, statusCode int, description string){
+func responseError(c *gin.Context, statusCode int, description string) {
 	c.JSON(statusCode, gin.H{
-		"ok": false,
-		"error": statusCode,
+		"ok":          false,
+		"error":       statusCode,
 		"description": description,
 	})
 }
-
-

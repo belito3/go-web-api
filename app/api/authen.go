@@ -1,4 +1,4 @@
-package service
+package api
 
 import (
 	"github.com/belito3/go-web-api/pkg/logger"

@@ -3,7 +3,6 @@ package middleware
 import (
 	"fmt"
 	"github.com/belito3/go-web-api/app/config"
-	"github.com/belito3/go-web-api/app/service"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 	"github.com/go-redis/redis_rate/v9"
@@ -30,7 +29,7 @@ func ARateLimiterMiddleware(conf config.AppConfiguration, skippers ...SkipperFun
 		}
 
 		if limiter.Allow() == false {
-			service.ResponseError(c, http.StatusTooManyRequests, fmt.Sprintf("App rate limit api exceeded!"))
+			responseError(c, http.StatusTooManyRequests, fmt.Sprintf("App rate limit api exceeded!"))
 			c.Abort()
 			return
 		}
@@ -74,7 +73,7 @@ func CRateLimiterMiddleware(conf config.AppConfiguration, skippers ...SkipperFun
 			res, err := limiter.Allow(ctx, clientIP, redis_rate.PerMinute(limit))
 			//fmt.Println("allowed", res.Allowed, "remaining", res.Remaining)
 			if err != nil {
-				service.ResponseError(c, http.StatusInternalServerError, "Internal Server Error!")
+				responseError(c, http.StatusInternalServerError, "Internal Server Error!")
 				c.Abort()
 				return
 			}
@@ -87,7 +86,7 @@ func CRateLimiterMiddleware(conf config.AppConfiguration, skippers ...SkipperFun
 			delaySec := int64(reset / time.Millisecond)
 			h.Set("X-RateLimit-Reset", strconv.FormatInt(delaySec, 10))
 			if !allowed{
-				service.ResponseError(c, http.StatusTooManyRequests, fmt.Sprintf("API rate limit exceeded for %v", clientIP))
+				responseError(c, http.StatusTooManyRequests, fmt.Sprintf("API rate limit exceeded for %v", clientIP))
 				c.Abort()
 				return
 			}
@@ -95,4 +94,13 @@ func CRateLimiterMiddleware(conf config.AppConfiguration, skippers ...SkipperFun
 
 		c.Next()
 	}
+}
+
+// responseError
+func responseError(c *gin.Context, statusCode int, description string){
+	c.JSON(statusCode, gin.H{
+		"ok": false,
+		"error": statusCode,
+		"description": description,
+	})
 }

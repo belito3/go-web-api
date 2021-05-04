@@ -43,6 +43,7 @@
   which mockgen
   --> /home/$USER/go/bin/mockgen
   ```
+  - Gen mock code: `make mock`
   
 ### References
 1. [simplebank](https://github.com/techschool/simplebank)
