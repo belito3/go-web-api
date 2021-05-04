@@ -2,3 +2,4 @@
 .idea
 refs/postgres/database-data/
 main
+.vscode

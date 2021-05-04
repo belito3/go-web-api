@@ -40,7 +40,7 @@ func Signin(c *gin.Context) {
 	var creds Credentials
 	// Get the JSON body and decode into credentials
 	if err := c.ShouldBindJSON(&creds); err!=nil {
-		ResponseError(c, http.StatusBadRequest, err.Error())
+		responseError(c, http.StatusBadRequest, err.Error())
 		logger.Errorf(nil, err.Error())
 		//c.Abort()
 		return
@@ -54,7 +54,7 @@ func Signin(c *gin.Context) {
 	// AND, if it is the same as the password we received, the we can move ahead
 	// if NOT, then we return an
 	if !ok || expectedSecretKey != creds.SecretKey {
-		ResponseError(c, http.StatusUnauthorized, "Status Unauthorized")
+		responseError(c, http.StatusUnauthorized, "Status Unauthorized")
 		return
 	}
 
@@ -75,7 +75,7 @@ func Signin(c *gin.Context) {
 	// Create the JWT string
 	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
-		ResponseError(c, http.StatusInternalServerError, "Internal Server Error")
+		responseError(c, http.StatusInternalServerError, "Internal Server Error")
 		logger.Errorf(nil, err.Error())
 		return
 	}
@@ -84,7 +84,7 @@ func Signin(c *gin.Context) {
 		"token": tokenString,
 	}
 
-	ResponseSuccess(c, http.StatusOK, r)
+	responseSuccess(c, http.StatusOK, r)
 }
 
 
@@ -98,7 +98,7 @@ func TokenAuthMiddleware() gin.HandlerFunc{
 		token := c.GetHeader("token")
 		if len(token) == 0 {
 			logger.Errorf(nil,"Token is not set")
-			ResponseError(c, http.StatusUnauthorized, "API token required")
+			responseError(c, http.StatusUnauthorized, "API token required")
 			c.Abort()
 			return
 		}
@@ -115,18 +115,18 @@ func TokenAuthMiddleware() gin.HandlerFunc{
 		if err != nil {
 			if err == jwt.ErrSignatureInvalid {
 				logger.Errorf(nil,"Token is invalid. SignatureInvalid. Token=%v", token)
-				ResponseError(c, http.StatusUnauthorized, "Token is invalid")
+				responseError(c, http.StatusUnauthorized, "Token is invalid")
 				c.Abort()
 				return
 			}
-			ResponseError(c, http.StatusBadRequest, "Token is invalid")
+			responseError(c, http.StatusBadRequest, "Token is invalid")
 			logger.Errorf(nil,"Token is invalid. Bad request. Token=%v", token)
 			c.Abort()
 			return
 		}
 		if !tkn.Valid {
 			logger.Errorf(nil,"Token is invalid. Token=%v", token)
-			ResponseError(c, http.StatusUnauthorized, "Token is invalid")
+			responseError(c, http.StatusUnauthorized, "Token is invalid")
 			c.Abort()
 			return
 		}
@@ -139,6 +139,6 @@ func TokenAuthMiddleware() gin.HandlerFunc{
 
 // Create Welcome handle
 func Welcome(c *gin.Context) {
-	ResponseSuccess(c, http.StatusOK, nil)
+	responseSuccess(c, http.StatusOK, nil)
 }
 
