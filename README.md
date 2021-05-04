@@ -3,7 +3,7 @@
 - `Graceful shutdown`
 - `Config` read from a file and environment variables  
 - `Middleware` rate limit, authentication: jwt
-- `Unit test` test real db and mock test
+- `Testing` test real db and mock test
 - `Logger` customize and write logs to file
 - `Database` implement db queries and transaction
 - `Run` app with minimal docker image 

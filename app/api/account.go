@@ -2,14 +2,15 @@ package api
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/belito3/go-web-api/app/repository/impl"
 	"github.com/belito3/go-web-api/pkg/logger"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 type Account struct {
-	store 	impl.IStore
+	store impl.IStore
 }
 
 func NewAccount(store impl.IStore) *Account {
@@ -17,8 +18,8 @@ func NewAccount(store impl.IStore) *Account {
 }
 
 type createAccountRequest struct {
-	Owner 		string	`json:"owner" binding:"required"`
-	Currency 	string	`json:"currency" binding:"required,oneof=USD EUR"`
+	Owner    string `json:"owner" binding:"required"`
+	Currency string `json:"currency" binding:"required,oneof=USD EUR"`
 }
 
 func (s *Account) createAccount(c *gin.Context) {
@@ -32,9 +33,9 @@ func (s *Account) createAccount(c *gin.Context) {
 		return
 	}
 	arg := impl.CreateAccountParams{
-		Owner: req.Owner,
+		Owner:    req.Owner,
 		Currency: req.Currency,
-		Balance: 0,
+		Balance:  0,
 	}
 
 	account, err := s.store.CreateAccount(ctx, arg)
@@ -69,6 +70,7 @@ func (s *Account) getAccount(c *gin.Context) {
 		return
 
 	}
+
 	r := map[string]interface{}{
 		"account": account,
 	}
