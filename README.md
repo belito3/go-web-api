@@ -20,6 +20,10 @@
 ```
 
 ### 2. Run
+
+- Run directly: `go run main.go`
+
+- Run with docker-compose
 ```
     make docker_build  // build docker with binary file
     make docker_run    // run docker-compose
@@ -29,6 +33,10 @@
    curl -d '{"owner": "cathy", "balance": 150, "currency": "EUR"}' -H "Content-Type: application/json" -X POST http://localhost:8000/api/v1/account/add
 ```
 - Update config in file app/config/config.yaml
+
+- Mock test: `make mock_test`
+- Unit test: `make test`
+
 
 ### 4. Other
 - How use mock generate code:

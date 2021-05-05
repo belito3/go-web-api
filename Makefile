@@ -19,6 +19,9 @@ build:
 test:
 	go test -v -cover ./app/repository/impl
 
+mock_test:
+	go test -timeout 30s -coverprofile=/tmp/vscode-goUJWYLL/go-code-cover github.com/belito3/go-web-api/app/api -v -count=1
+
 docker_build:
 	make build && docker build -t api-codebase-go:latest .
 
