@@ -20,6 +20,10 @@
 ```
 
 ### 2. Run
+
+- Run directly: `go run main.go`
+
+- Run with docker-compose
 ```
     make docker_build  // build docker with binary file
     make docker_run    // run docker-compose
