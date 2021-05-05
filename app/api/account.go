@@ -19,7 +19,7 @@ func NewAccount(store impl.IStore) *Account {
 
 type createAccountRequest struct {
 	Owner    string `json:"owner" binding:"required"`
-	Currency string `json:"currency" binding:"required,oneof=USD EUR"`
+	Currency string `json:"currency" binding:"required,oneof=USD EUR CAD"`
 }
 
 func (s *Account) createAccount(c *gin.Context) {

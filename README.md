@@ -30,6 +30,10 @@
 ```
 - Update config in file app/config/config.yaml
 
+- Mock test: `make mock_test`
+- Unit test: `make test`
+
+
 ### 4. Other
 - How use mock generate code:
   ```

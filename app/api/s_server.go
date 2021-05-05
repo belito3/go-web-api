@@ -9,9 +9,9 @@ import (
 
 // Server service HTTP requests for our banking service
 type Server struct {
-	conf 		config.AppConfiguration
-	container 	*dig.Container
-	router 		*gin.Engine
+	conf      config.AppConfiguration
+	container *dig.Container
+	router    *gin.Engine
 }
 
 func NewServer(conf config.AppConfiguration, container *dig.Container) *Server {
@@ -66,5 +66,3 @@ func handleError(err error) {
 		panic(err)
 	}
 }
-
-

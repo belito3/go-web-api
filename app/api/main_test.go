@@ -13,7 +13,7 @@ import (
 func newTestServer(t *testing.T, store impl.IStore) *Server {
 	// Build container
 	container := dig.New()
-	conf := config.AppConfiguration{}
+	conf := config.AppConfiguration{RunMode: gin.TestMode}
 	// Inject store to container
 	_ = container.Provide(func() impl.IStore {
 		return store
@@ -23,10 +23,10 @@ func newTestServer(t *testing.T, store impl.IStore) *Server {
 	server := NewServer(conf, container)
 	// Inject api to container
 	_ = server.InitGinEngine()
+	gin.SetMode(gin.TestMode)
 	return server
 }
 
 func TestMain(m *testing.M) {
-	gin.SetMode(gin.TestMode)
 	os.Exit(m.Run())
 }
